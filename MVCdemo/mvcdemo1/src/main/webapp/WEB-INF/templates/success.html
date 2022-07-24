@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
+<title>Title</title>
+</head>
+<body>
+<h1>恭喜你跳转数据</h1>
+<br>
+<p th:text="${testmessage}"></p><!--通过servlet域对象共享数据 requeset默认是页面范围 如果是session application泽需要前缀-->
+<hr><br><h1>mvc封装的传参方法</h1>
+<h3>一.MODELandVIEW</h3>
+数值 ：<p th:text="${testmessage}"></p>
+<br>
+<h3>二.MODEL</h3>
+数值 ：<p th:text="${testmessage}"></p>
+<br>
+<h3>三.Map集合</h3>
+数值 ：<p th:text="${testmessage}"></p>
+<br>
+<h3>四.ModelMap</h3>
+数值 ：<p th:text="${testmessage}"></p>
+<p th:text="${session.sessiontext}"><!--页面以外的域数据需要域前缀-->
+<p th:text="${application.application}"><!--页面以外的域数据需要域前缀-->
+</body>
+</html>

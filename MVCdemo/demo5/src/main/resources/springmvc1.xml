@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:nvc="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+    <!-- 自动扫描包 -->
+    <context:component-scan base-package="controllers,dao,interceptor"/>
+   <!--配置文件上传解析器   系那个上传的文件封装为MULtipartfile   在spring5中配置bean以后 通过name/id bean.class 获取-->
+    <bean  id="commonsMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+<!--Spingmvc 和是spring区别需要通过id 获取bean 和中 getbean（”id/name“,反射）不一样 只能用id-->
+    </bean>
+    <!-- 配置Thymeleaf视图解析器 -->
+    <bean id="viewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+        <property name="order" value="1"/>
+        <property name="characterEncoding" value="UTF-8"/>
+        <property name="templateEngine">
+            <bean class="org.thymeleaf.spring5.SpringTemplateEngine">
+                <property name="templateResolver">
+                    <bean class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+
+                        <!-- 视图前缀 -->
+                        <property name="prefix" value="/WEB-INF/templates/"/>
+
+                        <!-- 视图后缀 -->
+                        <property name="suffix" value=".html"/>
+                        <property name="templateMode" value="HTML5"/>
+                        <property name="characterEncoding" value="UTF-8" />
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <!--
+       处理静态资源，例如html、js、css、jpg
+      若只设置该标签，则只能访问静态资源，其他请求则无法访问
+      此时必须设置<mvc:annotation-driven/>解决问题
+     -->
+
+    <mvc:view-controller path="/" view-name="index"/>
+
+
+
+    <!-- 开启mvc注解驱动 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <!-- 处理响应中文内容乱码 -->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="defaultCharset" value="UTF-8" />
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html</value>
+                        <value>application/json</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven><!--开启mvc的注解驱动-->
+    <mvc:annotation-driven />
+    <!--配置拦截器-->
+    <mvc:interceptors>
+
+          <!--<bean class="interceptor.firstinterceptor"></bean>-->
+   <!--<ref bean="firstinterceptor"></ref>一种是直接创建bean ，2是用扫描组件创建bean 因为是bean无法设置条件三种拦截器风格都会使用
+       所以 才有第三中方法-->
+         <mvc:interceptor>
+             <mvc:mapping path="/*"/><!--注意这个是表示拦截所有/下的一级目录 /a /b之类 但是/a/aox不拦截 所以拦截全部应该是/**-->
+             <mvc:exclude-mapping path="/"/><!--排除不拦截的-->
+             <ref bean="firstinterceptor"></ref><!--指定该规则用于那个拦截器-->
+         </mvc:interceptor>
+<!--        <mvc:interceptor>-->
+<!--            <mvc:mapping path="/testInterceptor"/>-->
+<!--            <ref bean="secendinterceptor"></ref>-->
+<!--        </mvc:interceptor>-->
+    </mvc:interceptors >
+    <!--配置异常处理    SimpleMappingExceptionResolver自定义的异常处理  -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+<!--                <prop key="java.lang.ArithmeticException">error</prop>键值对双标签中是写入value 无profix  无suffix
+                      因此被thymeleafresolver 解析            -->
+                  <prop key="java.lang.ArithmeticException">error</prop><!--ArithmeticException指定为·异常出现为该运算异常 本质是控制器-->
+            </props>
+        </property>
+        <property name="exceptionAttribute" value="ex"></property><!--exceptionAttribute获取异常信息  默认放在request域对象中-->
+    </bean>
+ </beans>
