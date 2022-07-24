@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
+<title>首页</title>
+</head>
+<body>
+<h1>首页</h1>
+<form th:action="@{/testrequestbody}" method="post">
+    用户名：<input type="text" name="username">
+    密码：<input type="text" name="password">
+      <input type="submit" value="测试requestbody注解">
+    <hr>
+</form><form th:action="@{/testquestentity}" method="post">
+    用户名：<input type="text" name="username">
+    密码：<input type="text" name="password">  <!--报文实体=报文头+加报文体-->
+      <input type="submit" value="测试requestentity类">
+</form>
+<a th:href="@{/testresponse}">传统响应体处理测试</a><br>
+<a th:href="@{/testresponseBody}">使用注解    @ResponseBody测试</a><br>
+<a th:href="@{/testresponse2}">使用注解    @ResponseBody测试 返回对象作为响应体</a><br>
+<a th:href="@{/testDown}">使用注解 测试文件的下载</a>
+<a th:href="@{/up}">使用请求 测试文件的上传</a>
+</body>
+</html>
